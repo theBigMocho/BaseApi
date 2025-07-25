@@ -17,6 +17,7 @@
 - Comandos de instalación de paquetes
 - Comandos de migración de base de datos
 - Comandos de build y deployment
+- **Comandos de Git y control de versiones**
 - Cualquier script personalizado
 
 ### Comandos de Generación del Proyecto
