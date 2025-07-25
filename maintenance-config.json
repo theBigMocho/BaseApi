@@ -1,0 +1,133 @@
+{
+  "maintenanceConfig": {
+    "version": "1.0.0",
+    "lastUpdated": "2025-01-25",
+    "project": {
+      "name": "BaseApi",
+      "type": "ASP.NET Core WebAPI",
+      "framework": ".NET 8",
+      "database": "SQL Server 2022"
+    },
+    "automatedTasks": {
+      "documentation": {
+        "enabled": true,
+        "updateReadme": true,
+        "updateClaude": true,
+        "generateChangelog": false,
+        "updateSwaggerComments": false
+      },
+      "codeQuality": {
+        "enabled": false,
+        "runTests": false,
+        "checkCoverage": false,
+        "runLinting": false,
+        "formatCode": false
+      },
+      "security": {
+        "enabled": false,
+        "scanVulnerabilities": false,
+        "rotateSecrets": false,
+        "updateDependencies": false,
+        "securityLogs": false
+      },
+      "database": {
+        "enabled": true,
+        "autoMigrations": true,
+        "backupData": false,
+        "optimizeIndexes": false,
+        "cleanupLogs": false
+      },
+      "deployment": {
+        "enabled": false,
+        "cicdPipeline": false,
+        "containerization": false,
+        "environmentSync": false,
+        "healthChecks": false
+      },
+      "monitoring": {
+        "enabled": false,
+        "performanceMetrics": false,
+        "errorTracking": false,
+        "usageAnalytics": false,
+        "alertSystem": false
+      }
+    },
+    "rules": {
+      "commitAndPush": {
+        "enabled": true,
+        "analyzeChanges": true,
+        "semanticCommits": true,
+        "autoPush": true,
+        "description": "Analyze changes and create descriptive commit messages automatically"
+      },
+      "documentPermissions": {
+        "enabled": true,
+        "trackPermissions": true,
+        "updateReadme": true,
+        "categorizePermissions": true,
+        "description": "Document all permissions granted to Claude Code"
+      },
+      "bashCommandDocumentation": {
+        "enabled": true,
+        "classifyCommands": true,
+        "updateReadme": true,
+        "categories": [".NET", "EF-Core", "Git", "SQL", "Maintenance"],
+        "description": "Document and classify all bash commands executed"
+      }
+    },
+    "environments": {
+      "development": {
+        "active": true,
+        "database": "Server=.\\SQLSERVER2022;Database=BaseApi;User Id=sa;Password=mocho;TrustServerCertificate=True",
+        "url": "http://localhost:5012",
+        "features": ["debugging", "swagger", "detailedErrors"]
+      },
+      "staging": {
+        "active": false,
+        "database": "",
+        "url": "",
+        "features": ["minimalLogging", "swagger"]
+      },
+      "production": {
+        "active": false,
+        "database": "",
+        "url": "",
+        "features": ["minimalLogging", "securityHeaders", "compression"]
+      }
+    },
+    "integrations": {
+      "github": {
+        "enabled": true,
+        "repository": "theBigMocho/BaseApi",
+        "autoSync": true,
+        "createIssues": false
+      },
+      "sqlServer": {
+        "enabled": true,
+        "instance": ".\\SQLSERVER2022",
+        "database": "BaseApi",
+        "migrations": true
+      },
+      "swagger": {
+        "enabled": true,
+        "endpoint": "/swagger",
+        "autoGenerate": true
+      }
+    },
+    "permissions": {
+      "fileSystem": ["read", "write", "create", "delete", "navigate"],
+      "processes": ["execute", "terminate", "monitor"],
+      "database": ["connect", "query", "migrate", "crud"],
+      "network": ["http", "api", "webhooks"],
+      "git": ["init", "add", "commit", "push", "pull", "remote"],
+      "terminal": ["bash", "dotnet", "ef", "sql", "gh"]
+    },
+    "lastMaintenance": {
+      "documentation": "2025-01-25T00:00:00Z",
+      "dependencies": "2025-01-25T00:00:00Z",
+      "security": "2025-01-25T00:00:00Z",
+      "database": "2025-01-25T00:00:00Z",
+      "testing": "2025-01-25T00:00:00Z"
+    }
+  }
+}

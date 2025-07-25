@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BaseApi - Dashboard</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+        .dashboard {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin: 2rem auto;
+            max-width: 800px;
+        }
+        
+        .welcome {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .welcome h2 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+        
+        .actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .action-card {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: transform 0.2s ease;
+        }
+        
+        .action-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .action-card h3 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+        
+        .action-card p {
+            color: #6c757d;
+            margin-bottom: 1rem;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s ease;
+        }
+        
+        .btn-primary {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+        
+        .btn-danger {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+        
+        .user-info {
+            background: #e8f5e8;
+            border: 1px solid #4caf50;
+            border-radius: 6px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <header>
+            <h1>BaseApi - Dashboard</h1>
+        </header>
+        
+        <main>
+            <div class="dashboard">
+                <div class="welcome">
+                    <div class="user-info">
+                        <p><strong>¡Bienvenido!</strong> Has iniciado sesión exitosamente.</p>
+                        <p>Usuario: <span id="username"></span></p>
+                    </div>
+                    <h2>Panel de Control</h2>
+                    <p>Desde aquí puedes gestionar el sistema y acceder a todas las funcionalidades.</p>
+                </div>
+                
+                <div class="actions">
+                    <div class="action-card">
+                        <h3>Gestión de Usuarios</h3>
+                        <p>Administra usuarios del sistema, crear, editar y eliminar cuentas.</p>
+                        <a href="/users.html" class="btn btn-primary">Ir a Usuarios</a>
+                    </div>
+                    
+                    <div class="action-card">
+                        <h3>Configuración</h3>
+                        <p>Configura los parámetros del sistema y personaliza tu experiencia.</p>
+                        <a href="#" class="btn btn-primary">Configuración</a>
+                    </div>
+                    
+                    <div class="action-card">
+                        <h3>Reportes</h3>
+                        <p>Genera reportes y estadísticas del uso del sistema.</p>
+                        <a href="#" class="btn btn-primary">Ver Reportes</a>
+                    </div>
+                    
+                    <div class="action-card">
+                        <h3>API Documentation</h3>
+                        <p>Consulta la documentación de la API y prueba los endpoints.</p>
+                        <a href="/swagger" class="btn btn-primary" target="_blank">Ver Swagger</a>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button onclick="logout()" class="btn btn-danger">Cerrar Sesión</button>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <p>&copy; 2025 BaseApi - Sistema de Gestión de Usuarios</p>
+        </footer>
+    </div>
+
+    <script src="/js/auth.js"></script>
+    <script>
+        // Mostrar el nombre de usuario
+        document.addEventListener('DOMContentLoaded', () => {
+            const username = getUsername();
+            if (username) {
+                document.getElementById('username').textContent = username;
+            }
+        });
+    </script>
+</body>
+</html>

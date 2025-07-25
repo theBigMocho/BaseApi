@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BaseApi - Sistema de Autenticación</title>
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+    <div id="app">
+        <header>
+            <h1>BaseApi - Sistema de Autenticación</h1>
+        </header>
+        
+        <main>
+            <div id="auth-container">
+                <!-- El componente de login se insertará aquí usando Shadow DOM -->
+                <login-component></login-component>
+            </div>
+        </main>
+        
+        <footer>
+            <p>&copy; 2025 BaseApi - Sistema de Gestión de Usuarios</p>
+        </footer>
+    </div>
+
+    <!-- Scripts de componentes Shadow DOM -->
+    <script src="/components/login-component.js"></script>
+    <script src="/js/auth.js"></script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir:*)",
+      "Bash(taskkill:*)",
+      "Bash(dotnet run)",
+      "Bash(git add:*)"
+    ],
+    "deny": []
+  }
+}
