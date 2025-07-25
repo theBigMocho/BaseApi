@@ -12,12 +12,22 @@
 ## Instrucciones Importantes
 
 ### Documentación de Comandos
-**IMPORTANTE**: Siempre que ejecutes comandos de terminal/bash durante el desarrollo, documenta estos comandos en el README.md del proyecto. Esto incluye:
+**IMPORTANTE**: Siempre que ejecutes comandos de terminal/bash durante el desarrollo, documenta estos comandos en el README.md del proyecto clasificándolos según su categoría. Esto incluye:
+
+#### Clasificaciones de Comandos Bash:
+- **.NET**: Comandos dotnet (build, run, restore, clean, new, add package)
+- **EF-Core**: Comandos de Entity Framework (migrations, database update)  
+- **Git**: Comandos de control de versiones (init, add, commit, push, clone, etc.)
+- **SQL**: Comandos de base de datos (sqlcmd, conexiones, consultas)
+- **Otras clasificaciones**: Crear nuevas categorías según aparezcan comandos de diferentes tecnologías
+
+#### Tipos de comandos a documentar:
 - Comandos de generación de código
 - Comandos de instalación de paquetes
 - Comandos de migración de base de datos
 - Comandos de build y deployment
-- **Comandos de Git y control de versiones**
+- Comandos de Git y control de versiones
+- Comandos de base de datos y SQL
 - Cualquier script personalizado
 
 ### Comandos de Generación del Proyecto
