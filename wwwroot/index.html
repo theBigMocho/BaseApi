@@ -4,6 +4,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BaseApi - Sistema de Autenticación</title>
+    
+    <!-- Descripción y metadatos básicos -->
+    <meta name="description" content="Sistema completo de autenticación y gestión de usuarios con interfaz web moderna y soporte offline">
+    <meta name="keywords" content="autenticación, gestión usuarios, PWA, JWT, ASP.NET Core">
+    <meta name="author" content="BaseApi Team">
+    
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#764ba2">
+    <meta name="background-color" content="#667eea">
+    
+    <!-- iOS PWA Support -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="BaseApi">
+    <link rel="apple-touch-icon" href="/images/icon-192x192.png">
+    
+    <!-- Windows PWA Support -->
+    <meta name="msapplication-TileImage" content="/images/icon-144x144.png">
+    <meta name="msapplication-TileColor" content="#667eea">
+    <meta name="msapplication-navbutton-color" content="#764ba2">
+    
+    <!-- Android PWA Support -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="BaseApi">
+    
+    <!-- Iconos para diferentes dispositivos -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/icon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/icon-16x16.png">
+    <link rel="shortcut icon" href="/favicon.ico">
+    
+    <!-- Open Graph para redes sociales -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="BaseApi - Sistema de Gestión de Usuarios">
+    <meta property="og:description" content="Sistema completo de autenticación y gestión de usuarios con interfaz web moderna">
+    <meta property="og:image" content="/images/og-image.png">
+    <meta property="og:url" content="https://baseapi.com">
+    <meta property="og:site_name" content="BaseApi">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="BaseApi - Sistema de Gestión de Usuarios">
+    <meta name="twitter:description" content="Sistema completo de autenticación y gestión de usuarios con interfaz web moderna">
+    <meta name="twitter:image" content="/images/twitter-card.png">
+    
+    <!-- Estilos -->
     <link rel="stylesheet" href="/css/main.css">
 </head>
 <body>
@@ -27,5 +73,41 @@
     <!-- Scripts de componentes Shadow DOM -->
     <script src="/components/login-component.js"></script>
     <script src="/js/auth.js"></script>
+    
+    <!-- PWA Scripts -->
+    <script src="/js/pwa.js"></script>
+    
+    <!-- Registro de Service Worker -->
+    <script>
+        // Verificar compatibilidad y registrar service worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', async () => {
+                try {
+                    await navigator.serviceWorker.register('/sw.js');
+                    console.log('[PWA] Service Worker registered successfully');
+                } catch (error) {
+                    console.error('[PWA] Service Worker registration failed:', error);
+                }
+            });
+        }
+        
+        // Configurar eventos de instalación PWA
+        document.addEventListener('DOMContentLoaded', () => {
+            // Verificar si ya está instalada como PWA
+            if (window.matchMedia('(display-mode: standalone)').matches) {
+                console.log('[PWA] Running as installed app');
+                document.body.classList.add('pwa-mode');
+            }
+            
+            // Agregar evento para instalar PWA manualmente (para testing)
+            document.addEventListener('keydown', (e) => {
+                if (e.ctrlKey && e.shiftKey && e.key === 'I') {
+                    if (window.pwaManager) {
+                        window.pwaManager.installPWA();
+                    }
+                }
+            });
+        });
+    </script>
 </body>
 </html>

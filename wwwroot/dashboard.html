@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BaseApi - Dashboard</title>
+    
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#764ba2">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="BaseApi">
+    
     <link rel="stylesheet" href="/css/main.css">
     <style>
         .dashboard {
@@ -149,12 +156,22 @@
     </div>
 
     <script src="/js/auth.js"></script>
+    <script src="/js/pwa.js"></script>
+    
     <script>
         // Mostrar el nombre de usuario
         document.addEventListener('DOMContentLoaded', () => {
             const username = getUsername();
             if (username) {
                 document.getElementById('username').textContent = username;
+            }
+            
+            // Verificar estado PWA
+            if (window.pwaManager) {
+                const status = window.pwaManager.getInstallationStatus();
+                if (status.isInstalled) {
+                    console.log('[Dashboard] Running as PWA');
+                }
             }
         });
     </script>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Iconos PWA - BaseApi</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: #f5f5f5;
+        }
+        
+        .generator {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .icon-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        
+        .icon-item {
+            text-align: center;
+            padding: 1rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+        }
+        
+        .icon-item canvas {
+            border: 1px solid #ddd;
+            margin-bottom: 0.5rem;
+        }
+        
+        .download-btn {
+            padding: 0.5rem 1rem;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 0.25rem;
+        }
+        
+        .download-btn:hover {
+            background: #764ba2;
+        }
+        
+        .icon-svg {
+            margin: 2rem 0;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="generator">
+        <h1>Generador de Iconos PWA - BaseApi</h1>
+        <p>Esta página genera los iconos necesarios para la PWA de BaseApi en diferentes tamaños.</p>
+        
+        <div class="icon-svg">
+            <h3>Icono Base SVG:</h3>
+            <svg id="baseIcon" width="192" height="192" viewBox="0 0 192 192" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+                
+                <!-- Fondo con gradiente -->
+                <rect width="192" height="192" rx="24" fill="url(#gradient)"/>
+                
+                <!-- Texto "BA" -->
+                <text x="96" y="130" font-family="Arial, sans-serif" font-size="72" font-weight="bold" 
+                      text-anchor="middle" fill="white">BA</text>
+                
+                <!-- Decoración -->
+                <circle cx="96" cy="60" r="20" fill="rgba(255,255,255,0.3)"/>
+                <rect x="76" y="40" width="40" height="40" rx="8" fill="rgba(255,255,255,0.2)"/>
+            </svg>
+        </div>
+        
+        <div class="icon-preview" id="iconPreview">
+            <!-- Los iconos se generarán aquí -->
+        </div>
+        
+        <button onclick="generateAllIcons()" class="download-btn" style="font-size: 1.1rem; padding: 1rem 2rem;">
+            Generar Todos los Iconos
+        </button>
+    </div>
+    
+    <script>
+        // Tamaños de iconos necesarios para PWA
+        const iconSizes = [16, 32, 72, 96, 128, 144, 152, 192, 384, 512];
+        
+        function createIcon(size) {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = size;
+            canvas.height = size;
+            
+            // Crear gradiente
+            const gradient = ctx.createLinearGradient(0, 0, size, size);
+            gradient.addColorStop(0, '#667eea');
+            gradient.addColorStop(1, '#764ba2');
+            
+            // Fondo con gradiente y bordes redondeados
+            const radius = size * 0.125; // 12.5% del tamaño
+            ctx.fillStyle = gradient;
+            roundRect(ctx, 0, 0, size, size, radius);
+            ctx.fill();
+            
+            // Texto "BA"
+            ctx.fillStyle = 'white';
+            ctx.font = `bold ${size * 0.375}px Arial, sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('BA', size / 2, size * 0.68);
+            
+            // Decoración superior
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+            ctx.beginPath();
+            ctx.arc(size / 2, size * 0.31, size * 0.104, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+            const rectSize = size * 0.208;
+            const rectRadius = size * 0.042;
+            roundRect(ctx, (size - rectSize) / 2, size * 0.208, rectSize, rectSize, rectRadius);
+            ctx.fill();
+            
+            return canvas;
+        }
+        
+        function roundRect(ctx, x, y, width, height, radius) {
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
+        }
+        
+        function downloadCanvas(canvas, filename) {
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+        
+        function generateAllIcons() {
+            const preview = document.getElementById('iconPreview');
+            preview.innerHTML = '';
+            
+            iconSizes.forEach(size => {
+                const canvas = createIcon(size);
+                
+                const iconItem = document.createElement('div');
+                iconItem.className = 'icon-item';
+                
+                const displayCanvas = canvas.cloneNode();
+                const displayCtx = displayCanvas.getContext('2d');
+                displayCtx.drawImage(canvas, 0, 0);
+                
+                // Redimensionar para mostrar
+                if (size > 96) {
+                    displayCanvas.style.width = '96px';
+                    displayCanvas.style.height = '96px';
+                }
+                
+                iconItem.innerHTML = `
+                    <div>${size}x${size}</div>
+                    <div style="margin: 0.5rem 0;">${displayCanvas.outerHTML}</div>
+                    <button class="download-btn" onclick="downloadIcon(${size})">
+                        Descargar PNG
+                    </button>
+                `;
+                
+                preview.appendChild(iconItem);
+            });
+        }
+        
+        function downloadIcon(size) {
+            const canvas = createIcon(size);
+            downloadCanvas(canvas, `icon-${size}x${size}.png`);
+        }
+        
+        // Generar iconos al cargar
+        window.addEventListener('load', generateAllIcons);
+    </script>
+</body>
+</html>

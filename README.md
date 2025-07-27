@@ -55,21 +55,43 @@ dotnet run
 ### Otros
 - `GET /WeatherForecast` - Obtiene datos de ejemplo del clima
 
-## Interfaz Web
+## Interfaz Web - Progressive Web App (PWA)
 
-El proyecto incluye una interfaz web moderna construida con:
+El proyecto incluye una **Progressive Web App** completa con:
 - **Shadow DOM Components** - Componentes reutilizables encapsulados
-- **HTML5, CSS3, JavaScript** - Tecnologías web estándar
-- **Responsive Design** - Adaptable a dispositivos móviles
+- **HTML5, CSS3, JavaScript** - Tecnologías web estándar modernas
+- **Responsive Design** - Adaptable a dispositivos móviles y tablets
 - **JWT Authentication** - Integración completa con la API
+- **Funcionalidad Offline** - Caché inteligente con Service Worker
+- **Instalable** - Se puede instalar como aplicación nativa
+- **Notificaciones Push** - Soporte para notificaciones del sistema
+- **Actualizaciones Automáticas** - Gestión de versiones transparente
 
 ### Páginas Disponibles
 - `/` - Página de login con componente Shadow DOM
 - `/dashboard.html` - Panel de control (requiere autenticación)
+- `/offline.html` - Página mostrada cuando no hay conexión
+- `/generate-icons.html` - Generador de iconos PWA
 - `/swagger` - Documentación de la API
 
 ### Componentes Shadow DOM
 - `<login-component>` - Componente de autenticación con login y registro
+
+### Características PWA
+- **📱 Instalación**: Se puede instalar desde el navegador como app nativa
+- **🔄 Service Worker**: Caché inteligente para funcionalidad offline
+- **📤 Offline First**: Funciona sin conexión a internet
+- **🔔 Notificaciones**: Soporte para push notifications
+- **🚀 Performance**: Carga rápida con caché estratégico
+- **📲 App-like**: Experiencia similar a aplicación nativa
+- **🔄 Actualizaciones**: Sistema automático de actualizaciones
+- **🎨 Iconos**: Iconos adaptativos para todos los dispositivos
+
+### Instalación PWA
+1. **Navegador**: Aparecerá banner de instalación automáticamente
+2. **Manual**: Ctrl+Shift+I para forzar instalación (testing)
+3. **Móvil**: "Agregar a pantalla de inicio" desde el menú del navegador
+4. **Desktop**: "Instalar BaseApi" desde la barra de direcciones
 
 ### Uso de la Interfaz Web
 1. **Registro de usuario**: Completa todos los campos incluyendo confirmación de contraseña
@@ -114,6 +136,9 @@ dotnet add package Microsoft.AspNetCore.Authentication.JwtBearer --version 8.0.1
 
 # Crear estructura de archivos web
 mkdir -p wwwroot/components wwwroot/css wwwroot/js
+
+# Crear estructura para PWA
+mkdir -p wwwroot/images
 
 # Comandos de mantenimiento automático
 dotnet build --configuration Release

@@ -71,7 +71,7 @@
         "enabled": true,
         "classifyCommands": true,
         "updateReadme": true,
-        "categories": [".NET", "EF-Core", "Git", "SQL", "Maintenance"],
+        "categories": [".NET", "EF-Core", "Git", "SQL", "Maintenance", "PWA"],
         "description": "Document and classify all bash commands executed"
       }
     },
@@ -80,7 +80,7 @@
         "active": true,
         "database": "Server=.\\SQLSERVER2022;Database=BaseApi;User Id=sa;Password=mocho;TrustServerCertificate=True",
         "url": "http://localhost:5012",
-        "features": ["debugging", "swagger", "detailedErrors"]
+        "features": ["debugging", "swagger", "detailedErrors", "pwa", "serviceWorker"]
       },
       "staging": {
         "active": false,

@@ -71,11 +71,17 @@ dotnet clean
 - Implementar patrones Repository/Unit of Work cuando sea apropiado
 - Aplicar migraciones para cambios de esquema
 
-### Frontend
+### Frontend - Progressive Web App (PWA)
 - Crear componentes reutilizables usando Shadow DOM
 - Mantener separación entre lógica de componentes y estilos
 - Organizar archivos estáticos en estructura clara (HTML, CSS, JS)
 - Aplicar principios de encapsulación en componentes
+- **Implementar características PWA**: Service Worker, manifest.json, iconos adaptativos
+- **Funcionalidad offline**: Estrategias de caché inteligente para disponibilidad sin conexión
+- **Instalabilidad**: Configurar la aplicación para ser instalable como app nativa
+- **Performance**: Optimizar carga y rendimiento con técnicas PWA
+- **Notificaciones**: Implementar push notifications cuando sea apropiado
+- **Actualizaciones**: Gestionar actualizaciones de la aplicación automáticamente
 
 ### Control de Versiones (Git)
 - **Commits automáticos**: Cuando se solicite hacer commit y push, analizar los cambios realizados y crear un commit con una descripción clara y detallada que refleje las modificaciones implementadas

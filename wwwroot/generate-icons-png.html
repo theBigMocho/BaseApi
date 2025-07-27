@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generar Iconos PWA - BaseApi</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: #f5f5f5;
+        }
+        
+        .generator {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .icon-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        
+        .icon-item {
+            text-align: center;
+            padding: 1rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+        
+        .icon-item canvas {
+            border: 1px solid #ddd;
+            margin-bottom: 0.5rem;
+            background: white;
+        }
+        
+        .download-btn {
+            padding: 0.5rem 1rem;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 0.25rem;
+        }
+        
+        .download-btn:hover {
+            background: #764ba2;
+        }
+        
+        .download-all {
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 1rem 0;
+        }
+        
+        .download-all:hover {
+            background: #218838;
+        }
+        
+        .status {
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+    </style>
+</head>
+<body>
+    <div class="generator">
+        <h1>🎨 Generador de Iconos PWA - BaseApi</h1>
+        <p>Esta herramienta genera automáticamente todos los iconos necesarios para la PWA de BaseApi.</p>
+        
+        <div id="status" class="status" style="display: none;">
+            Iconos generados correctamente. Ahora puedes ver la opción de instalar PWA en tu navegador.
+        </div>
+        
+        <button onclick="generateAndDownloadAll()" class="download-all">
+            🚀 Generar y Descargar Todos los Iconos PWA
+        </button>
+        
+        <div class="icon-preview" id="iconPreview">
+            <!-- Los iconos se generarán aquí -->
+        </div>
+    </div>
+    
+    <script>
+        // Tamaños necesarios para PWA completa
+        const iconSizes = [
+            16, 32, 72, 96, 128, 144, 152, 192, 384, 512
+        ];
+        
+        function createIcon(size) {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = size;
+            canvas.height = size;
+            
+            // Crear gradiente de BaseApi
+            const gradient = ctx.createLinearGradient(0, 0, size, size);
+            gradient.addColorStop(0, '#667eea');
+            gradient.addColorStop(1, '#764ba2');
+            
+            // Fondo con gradiente y bordes redondeados
+            const radius = size * 0.125;
+            ctx.fillStyle = gradient;
+            roundRect(ctx, 0, 0, size, size, radius);
+            ctx.fill();
+            
+            // Texto "BA" (BaseApi)
+            ctx.fillStyle = 'white';
+            ctx.font = `bold ${size * 0.375}px Arial, sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('BA', size / 2, size * 0.68);
+            
+            // Decoración superior - círculo
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+            ctx.beginPath();
+            ctx.arc(size / 2, size * 0.31, size * 0.104, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // Decoración superior - rectángulo
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+            const rectSize = size * 0.208;
+            const rectRadius = size * 0.042;
+            roundRect(ctx, (size - rectSize) / 2, size * 0.208, rectSize, rectSize, rectRadius);
+            ctx.fill();
+            
+            return canvas;
+        }
+        
+        function roundRect(ctx, x, y, width, height, radius) {
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
+        }
+        
+        function downloadCanvas(canvas, filename) {
+            return new Promise((resolve) => {
+                canvas.toBlob((blob) => {
+                    const link = document.createElement('a');
+                    link.download = filename;
+                    link.href = URL.createObjectURL(blob);
+                    link.click();
+                    URL.revokeObjectURL(link.href);
+                    resolve();
+                }, 'image/png');
+            });
+        }
+        
+        async function generateAndDownloadAll() {
+            const preview = document.getElementById('iconPreview');
+            const statusDiv = document.getElementById('status');
+            
+            preview.innerHTML = '<p>Generando iconos...</p>';
+            
+            // Generar y mostrar iconos
+            for (const size of iconSizes) {
+                const canvas = createIcon(size);
+                
+                const iconItem = document.createElement('div');
+                iconItem.className = 'icon-item';
+                
+                const displayCanvas = canvas.cloneNode();
+                const displayCtx = displayCanvas.getContext('2d');
+                displayCtx.drawImage(canvas, 0, 0);
+                
+                // Redimensionar para mostrar (máximo 96px)
+                const displaySize = Math.min(96, size);
+                displayCanvas.style.width = displaySize + 'px';
+                displayCanvas.style.height = displaySize + 'px';
+                
+                iconItem.innerHTML = `
+                    <div><strong>${size}x${size}</strong></div>
+                    <div style="margin: 0.5rem 0;">${displayCanvas.outerHTML}</div>
+                    <button class="download-btn" onclick="downloadIcon(${size})">
+                        📥 Descargar
+                    </button>
+                `;
+                
+                preview.appendChild(iconItem);
+                
+                // Descargar automáticamente
+                await downloadCanvas(canvas, `icon-${size}x${size}.png`);
+                await new Promise(resolve => setTimeout(resolve, 100)); // Pequeña pausa
+            }
+            
+            // Mostrar mensaje de éxito
+            statusDiv.style.display = 'block';
+            statusDiv.innerHTML = `
+                ✅ <strong>¡Iconos generados exitosamente!</strong><br>
+                📂 Se han descargado ${iconSizes.length} iconos PNG<br>
+                📋 <strong>Próximos pasos:</strong><br>
+                1. Mueve los archivos descargados a la carpeta <code>wwwroot/images/</code><br>
+                2. Recarga la página principal de BaseApi<br>
+                3. Verás la opción de "Instalar" en la barra de direcciones
+            `;
+        }
+        
+        function downloadIcon(size) {
+            const canvas = createIcon(size);
+            downloadCanvas(canvas, `icon-${size}x${size}.png`);
+        }
+        
+        // Auto-generar al cargar para vista previa
+        window.addEventListener('load', () => {
+            const preview = document.getElementById('iconPreview');
+            iconSizes.forEach(size => {
+                const canvas = createIcon(size);
+                
+                const iconItem = document.createElement('div');
+                iconItem.className = 'icon-item';
+                
+                const displayCanvas = canvas.cloneNode();
+                const displayCtx = displayCanvas.getContext('2d');
+                displayCtx.drawImage(canvas, 0, 0);
+                
+                const displaySize = Math.min(96, size);
+                displayCanvas.style.width = displaySize + 'px';
+                displayCanvas.style.height = displaySize + 'px';
+                
+                iconItem.innerHTML = `
+                    <div><strong>${size}x${size}</strong></div>
+                    <div style="margin: 0.5rem 0;">${displayCanvas.outerHTML}</div>
+                    <div style="font-size: 0.8rem; color: #666;">icon-${size}x${size}.png</div>
+                `;
+                
+                preview.appendChild(iconItem);
+            });
+        });
+    </script>
+</body>
+</html>
