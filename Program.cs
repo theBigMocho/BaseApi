@@ -6,6 +6,7 @@ using BaseApi.Data;
 using BaseApi.Services;
 using BaseApi.Plugins.Core;
 using BaseApi.Plugins.ClaudeCode;
+using BaseApi.Plugins.ImageAnalysis;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,6 +49,7 @@ builder.Services.AddScoped<IChatService, ChatService>();
 
 // Registrar plugins específicos
 builder.Services.AddScoped<ClaudeCodeChatPlugin>();
+builder.Services.AddScoped<InvoiceAnalysisPlugin>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -61,12 +63,15 @@ using (var scope = app.Services.CreateScope())
 {
     var pluginManager = scope.ServiceProvider.GetRequiredService<IPluginManager>();
     var claudeCodePlugin = scope.ServiceProvider.GetRequiredService<ClaudeCodeChatPlugin>();
+    var invoiceAnalysisPlugin = scope.ServiceProvider.GetRequiredService<InvoiceAnalysisPlugin>();
     
     // Registrar plugins
     pluginManager.RegisterPlugin(claudeCodePlugin);
+    pluginManager.RegisterPlugin(invoiceAnalysisPlugin);
     
     // Habilitar plugins
     claudeCodePlugin.IsEnabled = true;
+    invoiceAnalysisPlugin.IsEnabled = true;
     
     // Inicializar plugins
     await pluginManager.InitializePluginsAsync();
