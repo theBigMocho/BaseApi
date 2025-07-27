@@ -4,6 +4,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using BaseApi.Data;
 using BaseApi.Services;
+using BaseApi.Plugins.Core;
+using BaseApi.Plugins.ClaudeCode;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,12 +42,35 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 
+// Registrar sistema de plugins
+builder.Services.AddSingleton<IPluginManager, PluginManager>();
+builder.Services.AddScoped<IChatService, ChatService>();
+
+// Registrar plugins específicos
+builder.Services.AddScoped<ClaudeCodeChatPlugin>();
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+// Inicializar sistema de plugins
+using (var scope = app.Services.CreateScope())
+{
+    var pluginManager = scope.ServiceProvider.GetRequiredService<IPluginManager>();
+    var claudeCodePlugin = scope.ServiceProvider.GetRequiredService<ClaudeCodeChatPlugin>();
+    
+    // Registrar plugins
+    pluginManager.RegisterPlugin(claudeCodePlugin);
+    
+    // Habilitar plugins
+    claudeCodePlugin.IsEnabled = true;
+    
+    // Inicializar plugins
+    await pluginManager.InitializePluginsAsync();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

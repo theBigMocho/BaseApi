@@ -1,7 +1,8 @@
 // Utilidades de autenticación
 class AuthManager {
     constructor() {
-        this.token = localStorage.getItem('authToken');
+        // Intentar con ambos nombres para compatibilidad
+        this.token = localStorage.getItem('token') || localStorage.getItem('authToken');
         this.username = localStorage.getItem('username');
     }
     
@@ -24,6 +25,8 @@ class AuthManager {
     setAuthData(token, username) {
         this.token = token;
         this.username = username;
+        // Guardar con ambos nombres para compatibilidad
+        localStorage.setItem('token', token);
         localStorage.setItem('authToken', token);
         localStorage.setItem('username', username);
     }
@@ -32,6 +35,8 @@ class AuthManager {
     clearAuthData() {
         this.token = null;
         this.username = null;
+        // Limpiar ambos nombres
+        localStorage.removeItem('token');
         localStorage.removeItem('authToken');
         localStorage.removeItem('username');
     }
