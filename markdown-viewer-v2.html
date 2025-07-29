@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BaseApi Documentation Viewer - Proyecto BaseApi</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 20px;
+            height: calc(100vh - 40px);
+        }
+        
+        .sidebar {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .sidebar-header {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .sidebar-header h1 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+        
+        .sidebar-header p {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+        
+        .filters {
+            padding: 20px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .search-box {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 15px;
+            transition: border-color 0.3s;
+        }
+        
+        .search-box:focus {
+            outline: none;
+            border-color: #4f46e5;
+        }
+        
+        .tags-container {
+            margin-bottom: 15px;
+        }
+        
+        .tags-container label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #6b7280;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .tags-filter {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        
+        .tag-filter {
+            background: #f3f4f6;
+            border: 2px solid transparent;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.3s;
+            user-select: none;
+        }
+        
+        .tag-filter:hover {
+            background: #e5e7eb;
+        }
+        
+        .tag-filter.active {
+            background: #4f46e5;
+            color: white;
+            border-color: #4338ca;
+        }
+        
+        .file-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 20px 20px;
+        }
+        
+        .file-item {
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #fafafa;
+        }
+        
+        .file-item:hover {
+            border-color: #4f46e5;
+            background: #f8faff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.1);
+        }
+        
+        .file-item.active {
+            border-color: #4f46e5;
+            background: #f0f4ff;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
+        }
+        
+        .file-title {
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .file-description {
+            color: #6b7280;
+            font-size: 12px;
+            line-height: 1.4;
+            margin-bottom: 10px;
+        }
+        
+        .file-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+        
+        .tag {
+            background: #e0e7ff;
+            color: #3730a3;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 500;
+        }
+        
+        .tag.architecture { background: #fef3c7; color: #92400e; }
+        .tag.security { background: #fee2e2; color: #991b1b; }
+        .tag.iot { background: #dcfce7; color: #166534; }
+        .tag.devops { background: #e0f2fe; color: #0c4a6e; }
+        .tag.ai { background: #f3e8ff; color: #6b21a8; }
+        .tag.career { background: #fff7ed; color: #c2410c; }
+        .tag.process { background: #ecfdf5; color: #14532d; }
+        .tag.automation { background: #fdf4ff; color: #86198f; }
+        .tag.baseapi { background: #dbeafe; color: #1e40af; }
+        .tag.plugins { background: #e0f2fe; color: #0369a1; }
+        .tag.dotnet { background: #f0f9ff; color: #0c4a6e; }
+        .tag.jwt { background: #fef3c7; color: #a16207; }
+        .tag.pwa { background: #ecfdf5; color: #047857; }
+        .tag.images { background: #fdf4ff; color: #a21caf; }
+        .tag.invoices { background: #fef2f2; color: #dc2626; }
+        .tag.analysis { background: #f3e8ff; color: #7c2d12; }
+        .tag.testing { background: #f0fdf4; color: #15803d; }
+        .tag.verification { background: #fefce8; color: #ca8a04; }
+        .tag.bash { background: #f1f5f9; color: #475569; }
+        .tag.commands { background: #f8fafc; color: #64748b; }
+        .tag.documentation { background: #fafafa; color: #374151; }
+        .tag.config { background: #f9fafb; color: #6b7280; }
+        .tag.conventions { background: #f3f4f6; color: #4b5563; }
+        .tag.claude-code { background: #ddd6fe; color: #5b21b6; }
+        
+        .content-area {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .content-header {
+            background: #f8fafc;
+            padding: 20px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: between;
+            align-items: center;
+        }
+        
+        .content-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+        
+        .file-input-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .file-input {
+            padding: 8px 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        
+        .content-body {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            line-height: 1.6;
+        }
+        
+        .content-body h1, .content-body h2, .content-body h3 { 
+            color: #1f2937; 
+            margin-top: 1.5em;
+            margin-bottom: 0.5em;
+        }
+        .content-body h1 { 
+            border-bottom: 2px solid #e5e7eb; 
+            padding-bottom: 10px; 
+            font-size: 2rem;
+        }
+        .content-body h2 { 
+            border-bottom: 1px solid #e5e7eb; 
+            padding-bottom: 5px;
+            font-size: 1.5rem;
+        }
+        .content-body h3 {
+            font-size: 1.2rem;
+        }
+        
+        .content-body code {
+            background: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        
+        .content-body pre {
+            background: #f1f5f9;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        
+        .content-body pre code {
+            background: none;
+            padding: 0;
+        }
+        
+        .content-body table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        
+        .content-body th,
+        .content-body td {
+            border: 1px solid #e5e7eb;
+            padding: 8px 12px;
+            text-align: left;
+        }
+        
+        .content-body th {
+            background: #f8fafc;
+            font-weight: 600;
+        }
+        
+        .empty-state {
+            text-align: center;
+            color: #9ca3af;
+            padding: 40px;
+        }
+        
+        .empty-state h3 {
+            margin-bottom: 10px;
+        }
+        
+        .stats {
+            padding: 15px 20px;
+            background: #f8fafc;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            font-size: 12px;
+            color: #6b7280;
+        }
+        
+        .clear-filters {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .clear-filters:hover {
+            background: #dc2626;
+        }
+        
+        @media (max-width: 1024px) {
+            .main-container {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+            
+            .sidebar {
+                max-height: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h1>📚 BaseApi Docs</h1>
+                <p>Documentación del Proyecto BaseApi</p>
+            </div>
+            
+            <div class="filters">
+                <input type="text" class="search-box" placeholder="🔍 Buscar en títulos y descripciones...">
+                
+                <div class="tags-container">
+                    <label>Filtrar por tags:</label>
+                    <div class="tags-filter" id="tagsFilter">
+                        <!-- Tags se generan dinámicamente -->
+                    </div>
+                </div>
+                
+                <button class="clear-filters" onclick="clearFilters()">Limpiar Filtros</button>
+            </div>
+            
+            <div class="file-list" id="fileList">
+                <!-- Lista de archivos se genera dinámicamente -->
+            </div>
+            
+            <div class="stats">
+                <span id="fileCount">0 documentos</span>
+                <div class="file-input-container">
+                    <input type="file" id="fileInput" class="file-input" accept=".md,.markdown,.txt" />
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-area">
+            <div class="content-header">
+                <div class="content-title" id="contentTitle">Selecciona un documento</div>
+            </div>
+            <div class="content-body" id="contentBody">
+                <div class="empty-state">
+                    <h3>👋 ¡Bienvenido a la Documentación de BaseApi!</h3>
+                    <p>Selecciona un documento del panel izquierdo para ver la documentación del proyecto.</p>
+                    
+                    <div id="viewerModeInfo" style="background: #f0f9ff; border: 1px solid #0ea5e9; border-radius: 8px; padding: 16px; margin: 20px 0; text-align: left; max-width: 500px; margin-left: auto; margin-right: auto;">
+                        <h4 style="color: #0c4a6e; margin-bottom: 8px;">📋 Modo de Visualización</h4>
+                        <p style="color: #0c4a6e; font-size: 14px; margin: 0;">
+                            <strong>Detectando...</strong> Verificando si puedes ver documentación completa o resumida.
+                        </p>
+                    </div>
+                    
+                    <p>🎯 <strong>Documentos Disponibles:</strong></p>
+                    <ul style="text-align: left; max-width: 400px; margin: 0 auto;">
+                        <li>📖 <strong>README.md</strong> - Documentación principal del proyecto</li>
+                        <li>⚙️ <strong>CLAUDE.md</strong> - Configuración para Claude Code</li>
+                        <li>🔌 <strong>Verificación Plugins</strong> - Sistema de plugins implementado</li>
+                        <li>📸 <strong>Análisis de Imágenes</strong> - Procesamiento de facturas con IA</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Base de conocimientos con metadata y contenido como fallback
+        const knowledgeBase = {
+            'README.md': {
+                title: 'README.md - BaseApi Project Documentation',
+                description: 'Documentación completa del proyecto BaseApi: ASP.NET Core WebAPI con PWA, autenticación JWT, Entity Framework y sistema de plugins.',
+                tags: ['baseapi', 'documentation', 'dotnet', 'pwa', 'jwt', 'plugins'],
+                filePath: './README.md',
+                fallbackContent: `# BaseApi - WebAPI .NET 8
+
+Proyecto WebAPI creado con .NET 8 y controladores.
+
+## 🚨 Nota sobre Visualización
+
+Si ves este contenido básico, significa que estás ejecutando el viewer con doble clic. Para ver la documentación completa y actualizada:
+
+### Opción 1: Usar servidor web local
+\`\`\`bash
+# En la carpeta del proyecto
+dotnet run
+# Luego abrir: http://localhost:5012/markdown-viewer-v2.html
+\`\`\`
+
+### Opción 2: Python simple server
+\`\`\`bash
+# En la carpeta del proyecto
+python -m http.server 8000
+# Luego abrir: http://localhost:8000/markdown-viewer-v2.html
+\`\`\`
+
+### Opción 3: Leer archivo directamente
+Por favor abre el archivo \`README.md\` directamente para ver toda la documentación del proyecto.
+
+## Resumen del Proyecto BaseApi
+
+- **Framework**: .NET 8 WebAPI
+- **Autenticación**: JWT
+- **Base de datos**: Entity Framework Core + SQL Server
+- **Frontend**: Progressive Web App (PWA)
+- **Plugins**: Sistema extensible de plugins
+- **Análisis de imágenes**: Procesamiento de facturas con IA
+
+## Comandos Básicos
+
+\`\`\`bash
+# Ejecutar proyecto
+dotnet run
+
+# Compilar
+dotnet build
+
+# Crear migración
+dotnet ef migrations add NombreMigracion
+
+# Aplicar migraciones
+dotnet ef database update
+\`\`\`
+
+**📄 Para documentación completa, ver archivo README.md original**`
+            },
+            
+            'CLAUDE.md': {
+                title: 'CLAUDE.md - Configuración Proyecto BaseApi',
+                description: 'Archivo de configuración específico para Claude Code con contexto del proyecto, comandos útiles y convenciones de desarrollo.',
+                tags: ['claude-code', 'config', 'baseapi', 'dotnet', 'conventions'],
+                filePath: './CLAUDE.md',
+                fallbackContent: `# CLAUDE.md - Contexto del Proyecto BaseApi
+
+## 🚨 Contenido Simplificado
+
+Este es contenido simplificado porque estás usando doble clic. Para ver la configuración completa de Claude Code, abre el archivo \`CLAUDE.md\` directamente.
+
+## Proyecto Básico
+- **Nombre**: BaseApi
+- **Tipo**: ASP.NET Core WebAPI
+- **Framework**: .NET 8
+
+## Comandos Esenciales
+\`\`\`bash
+dotnet run    # Ejecutar
+dotnet build  # Compilar
+dotnet clean  # Limpiar
+\`\`\`
+
+**📄 Ver CLAUDE.md para configuración completa**`
+            },
+
+            'DOCUMENTACION_VERIFICACION_PLUGINS.md': {
+                title: 'Documentación Verificación - Sistema de Plugins',
+                description: 'Documentación completa de todos los comandos bash utilizados para verificar el funcionamiento del sistema de plugins de chat, incluyendo resultados y confirmaciones.',
+                tags: ['plugins', 'testing', 'verification', 'bash', 'commands', 'baseapi'],
+                filePath: './DOCUMENTACION_VERIFICACION_PLUGINS.md',
+                fallbackContent: `# Sistema de Plugins - Verificación
+
+## 🚨 Contenido Resumido
+
+Para ver la documentación completa de verificación del sistema de plugins, abre el archivo \`DOCUMENTACION_VERIFICACION_PLUGINS.md\` directamente.
+
+## Resumen de Verificaciones
+
+✅ **Sistema funcionando correctamente**
+- Plugin ClaudeCodeChat inicializado
+- Endpoints REST respondiendo
+- Comandos bash documentados
+- Tests de integración exitosos
+
+## Comandos Principales Verificados
+\`\`\`bash
+dotnet build  # Compilación exitosa
+dotnet run    # Ejecución correcta
+curl /api/pluginchat/status  # Estado OK
+\`\`\`
+
+**📄 Ver archivo original para documentación completa con resultados detallados**`
+            },
+
+            'DOCUMENTACION_ANALISIS_IMAGENES.md': {
+                title: 'Documentación - Sistema Análisis Imágenes',  
+                description: 'Documentación completa del sistema de análisis de imágenes para facturas y documentos, incluyendo endpoints, ejemplos de uso y arquitectura.',
+                tags: ['images', 'analysis', 'invoices', 'ai', 'plugins', 'baseapi'],
+                filePath: './DOCUMENTACION_ANALISIS_IMAGENES.md',
+                fallbackContent: `# 📸 Sistema de Análisis de Imágenes
+
+## 🚨 Contenido Resumido
+
+Para documentación completa del sistema de análisis de imágenes, abre el archivo \`DOCUMENTACION_ANALISIS_IMAGENES.md\` directamente.
+
+## Funcionalidades Principales
+
+✅ **Sistema Operativo**
+- Upload de múltiples formatos (JPEG, PNG, GIF, BMP, TIFF, WebP)
+- Análisis especializado de facturas
+- Procesamiento en lote
+- Extracción de datos estructurados
+
+## Endpoints Principales
+\`\`\`bash
+POST /api/imageanalysis/analyze        # Analizar imagen
+POST /api/imageanalysis/analyze-batch  # Procesamiento lote
+GET  /api/imageanalysis/capabilities   # Capacidades
+GET  /api/imageanalysis/health         # Estado
+\`\`\`
+
+## Estado del Sistema
+- **Compilación**: ✅ Exitosa
+- **Plugins registrados**: ✅ 2/2 (Chat + ImageAnalysis)
+- **Endpoints**: ✅ Todos funcionando
+
+**📄 Ver archivo original para documentación completa con ejemplos**`
+            }
+        };
+
+        // Variables globales
+        let filteredFiles = [];
+        let activeFilters = [];
+        let currentFile = null;
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeKnowledgeBase();
+            setupEventListeners();
+            updateStats();
+            updateViewerModeInfo();
+        });
+
+        function initializeKnowledgeBase() {
+            filteredFiles = Object.keys(knowledgeBase);
+            generateTagsFilter();
+            renderFileList();
+        }
+
+        function setupEventListeners() {
+            const searchBox = document.querySelector('.search-box');
+            const fileInput = document.getElementById('fileInput');
+
+            searchBox.addEventListener('input', handleSearch);
+            fileInput.addEventListener('change', handleFileUpload);
+        }
+
+        function generateTagsFilter() {
+            const allTags = new Set();
+            Object.values(knowledgeBase).forEach(file => {
+                file.tags.forEach(tag => allTags.add(tag));
+            });
+
+            const tagsFilter = document.getElementById('tagsFilter');
+            tagsFilter.innerHTML = '';
+            
+            Array.from(allTags).sort().forEach(tag => {
+                const tagElement = document.createElement('span');
+                tagElement.className = 'tag-filter';
+                tagElement.textContent = tag;
+                tagElement.onclick = () => toggleTagFilter(tag);
+                tagsFilter.appendChild(tagElement);
+            });
+        }
+
+        function toggleTagFilter(tag) {
+            const tagElement = Array.from(document.querySelectorAll('.tag-filter'))
+                .find(el => el.textContent === tag);
+            
+            if (activeFilters.includes(tag)) {
+                activeFilters = activeFilters.filter(t => t !== tag);
+                tagElement.classList.remove('active');
+            } else {
+                activeFilters.push(tag);
+                tagElement.classList.add('active');
+            }
+            
+            applyFilters();
+        }
+
+        function handleSearch(event) {
+            applyFilters();
+        }
+
+        function applyFilters() {
+            const searchTerm = document.querySelector('.search-box').value.toLowerCase();
+            
+            filteredFiles = Object.keys(knowledgeBase).filter(fileName => {
+                const file = knowledgeBase[fileName];
+                
+                // Filtro por búsqueda
+                const matchesSearch = !searchTerm || 
+                    file.title.toLowerCase().includes(searchTerm) ||
+                    file.description.toLowerCase().includes(searchTerm);
+                
+                // Filtro por tags
+                const matchesTags = activeFilters.length === 0 || 
+                    activeFilters.some(tag => file.tags.includes(tag));
+                
+                return matchesSearch && matchesTags;
+            });
+            
+            renderFileList();
+            updateStats();
+        }
+
+        function renderFileList() {
+            const fileList = document.getElementById('fileList');
+            fileList.innerHTML = '';
+            
+            if (filteredFiles.length === 0) {
+                fileList.innerHTML = '<div class="empty-state"><p>No se encontraron documentos que coincidan con los filtros.</p></div>';
+                return;
+            }
+            
+            filteredFiles.forEach(fileName => {
+                const file = knowledgeBase[fileName];
+                const fileItem = createFileItem(fileName, file);
+                fileList.appendChild(fileItem);
+            });
+        }
+
+        function createFileItem(fileName, file) {
+            const item = document.createElement('div');
+            item.className = 'file-item';
+            item.onclick = () => selectFile(fileName);
+            
+            if (currentFile === fileName) {
+                item.classList.add('active');
+            }
+            
+            item.innerHTML = `
+                <div class="file-title">${file.title}</div>
+                <div class="file-description">${file.description}</div>
+                <div class="file-tags">
+                    ${file.tags.map(tag => `<span class="tag ${tag}">${tag}</span>`).join('')}
+                </div>
+            `;
+            
+            return item;
+        }
+
+        async function selectFile(fileName) {
+            currentFile = fileName;
+            const file = knowledgeBase[fileName];
+            
+            document.getElementById('contentTitle').textContent = file.title;
+            
+            // Detectar si estamos en protocolo file:// (doble clic)
+            const isFileProtocol = window.location.protocol === 'file:';
+            
+            const contentBody = document.getElementById('contentBody');
+            
+            if (isFileProtocol) {
+                // Usar contenido fallback para doble clic
+                contentBody.innerHTML = marked.parse(file.fallbackContent);
+            } else {
+                // Mostrar loading para HTTP
+                contentBody.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: #6b7280;">
+                        <div style="display: inline-block; width: 32px; height: 32px; border: 3px solid #e5e7eb; border-top: 3px solid #4f46e5; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 16px;"></div>
+                        <p>Cargando ${fileName}...</p>
+                    </div>
+                    <style>
+                        @keyframes spin {
+                            0% { transform: rotate(0deg); }
+                            100% { transform: rotate(360deg); }
+                        }
+                    </style>
+                `;
+                
+                try {
+                    // Cargar archivo markdown dinámicamente via HTTP
+                    const response = await fetch(file.filePath);
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    
+                    const markdownContent = await response.text();
+                    
+                    // Procesar y mostrar el contenido completo
+                    contentBody.innerHTML = marked.parse(markdownContent);
+                    
+                } catch (error) {
+                    // En caso de error en HTTP, usar fallback
+                    contentBody.innerHTML = `
+                        <div style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+                            <h4 style="color: #856404; margin-bottom: 12px;">⚠️ No se pudo cargar desde archivo</h4>
+                            <p style="color: #856404; font-size: 14px; margin-bottom: 16px;">
+                                <strong>Error:</strong> ${error.message}<br>
+                                Mostrando contenido resumido como alternativa.
+                            </p>
+                        </div>
+                        ${marked.parse(file.fallbackContent)}
+                    `;
+                }
+            }
+            
+            // Actualizar estados activos
+            document.querySelectorAll('.file-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.closest('.file-item')?.classList.add('active');
+        }
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            // Validar que sea un archivo markdown
+            if (!file.name.toLowerCase().endsWith('.md') && !file.name.toLowerCase().endsWith('.markdown')) {
+                alert('Por favor selecciona un archivo Markdown (.md o .markdown)');
+                event.target.value = '';
+                return;
+            }
+            
+            // Mostrar feedback de carga
+            const contentBody = document.getElementById('contentBody');
+            const originalContent = contentBody.innerHTML;
+            
+            contentBody.innerHTML = `
+                <div style="text-align: center; padding: 40px; color: #6b7280;">
+                    <div style="display: inline-block; width: 32px; height: 32px; border: 3px solid #e5e7eb; border-top: 3px solid #4f46e5; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 16px;"></div>
+                    <p>Cargando archivo: <strong>${file.name}</strong></p>
+                    <p style="font-size: 14px; color: #9ca3af;">Procesando contenido...</p>
+                </div>
+                <style>
+                    @keyframes spin {
+                        0% { transform: rotate(0deg); }
+                        100% { transform: rotate(360deg); }
+                    }
+                </style>
+            `;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const content = e.target.result;
+                    const fileName = file.name;
+                    
+                    // Crear un blob URL para el archivo cargado
+                    const blob = new Blob([content], { type: 'text/plain' });
+                    const blobUrl = URL.createObjectURL(blob);
+                    
+                    // Agregar archivo a la base de conocimientos
+                    knowledgeBase[fileName] = {
+                        title: fileName.replace(/\.md$/i, '').replace(/[-_]/g, ' '),
+                        description: 'Archivo cargado externamente - contenido desde tu dispositivo',
+                        tags: ['external', 'uploaded'],
+                        filePath: blobUrl,
+                        fallbackContent: content // Usar el contenido real como fallback
+                    };
+                    
+                    // Actualizar interfaz completamente
+                    generateTagsFilter();
+                    initializeKnowledgeBase(); // Re-inicializar para incluir el nuevo archivo
+                    applyFilters();
+                    updateStats();
+                    
+                    // Seleccionar el archivo recién cargado
+                    setTimeout(() => {
+                        selectFile(fileName);
+                    }, 100);
+                    
+                } catch (error) {
+                    // Restaurar contenido original en caso de error
+                    contentBody.innerHTML = originalContent;
+                    alert(`Error al cargar el archivo: ${error.message}`);
+                }
+                
+                // Limpiar el input para permitir cargar el mismo archivo de nuevo
+                event.target.value = '';
+            };
+            
+            reader.onerror = function() {
+                contentBody.innerHTML = originalContent;
+                alert('Error al leer el archivo. Por favor intenta de nuevo.');
+                event.target.value = '';
+            };
+            
+            reader.readAsText(file);
+        }
+
+        function clearFilters() {
+            document.querySelector('.search-box').value = '';
+            activeFilters = [];
+            document.querySelectorAll('.tag-filter').forEach(tag => {
+                tag.classList.remove('active');
+            });
+            applyFilters();
+        }
+
+        function updateStats() {
+            const total = Object.keys(knowledgeBase).length;
+            const filtered = filteredFiles.length;
+            const statsText = filtered === total ? 
+                `${total} documentos` : 
+                `${filtered} de ${total} documentos`;
+            document.getElementById('fileCount').textContent = statsText;
+        }
+
+        function updateViewerModeInfo() {
+            const viewerModeInfo = document.getElementById('viewerModeInfo');
+            if (!viewerModeInfo) return;
+
+            const isFileProtocol = window.location.protocol === 'file:';
+            
+            if (isFileProtocol) {
+                viewerModeInfo.innerHTML = `
+                    <h4 style="color: #dc2626; margin-bottom: 8px;">⚠️ Modo Doble Clic Detectado</h4>
+                    <p style="color: #dc2626; font-size: 14px; margin-bottom: 12px;">
+                        Estás viendo <strong>contenido resumido</strong> porque abriste el archivo con doble clic.
+                    </p>
+                    <div style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 6px; padding: 12px; margin-top: 8px;">
+                        <p style="color: #991b1b; font-size: 13px; margin: 0;">
+                            💡 <strong>Para ver documentación completa:</strong><br>
+                            • Ejecuta <code>dotnet run</code> y abre <code>http://localhost:5012/markdown-viewer-v2.html</code><br>
+                            • O usa <code>python -m http.server 8000</code> y abre <code>http://localhost:8000/markdown-viewer-v2.html</code>
+                        </p>
+                    </div>
+                `;
+                viewerModeInfo.style.background = '#fef2f2';
+                viewerModeInfo.style.borderColor = '#fecaca';
+            } else {
+                viewerModeInfo.innerHTML = `
+                    <h4 style="color: #059669; margin-bottom: 8px;">✅ Modo Servidor Web Detectado</h4>
+                    <p style="color: #059669; font-size: 14px; margin: 0;">
+                        Perfecto! Verás la <strong>documentación completa y actualizada</strong> cargada dinámicamente desde los archivos originales.
+                    </p>
+                `;
+                viewerModeInfo.style.background = '#ecfdf5';
+                viewerModeInfo.style.borderColor = '#10b981';
+            }
+        }
+    </script>
+</body>
+</html>
